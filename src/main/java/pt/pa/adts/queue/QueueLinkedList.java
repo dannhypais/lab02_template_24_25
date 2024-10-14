@@ -10,10 +10,55 @@ public class QueueLinkedList<T>  {
     private int size;
 
     public QueueLinkedList() {
-        //TODO: construtor deve inicializar uma fila vazia
+        header = new ListNode(null, null, null);
+        trailer = new ListNode(null, header, null);
+        header.next = trailer;
+        size = 0;
     }
 
-    //TODO: implementar métodos da interface à custa da estrutura de dados fornecida
+    public void enqueue(T elem) throws QueueFullException, NullPointerException{
+        if (size == Integer.MAX_VALUE) throw new QueueFullException("Queue is full");
+
+        if (elem == null) throw new NullPointerException("Element cannot be null");
+
+        ListNode newNode = new ListNode(elem, trailer.prev, trailer);
+        trailer.prev.next = newNode;
+        trailer.prev = newNode;
+        size++;
+    }
+
+    public T dequeue() throws QueueEmptyException{
+        if(size == 0) throw new QueueEmptyException("Queue is empty");
+
+        T elem = header.next.element;
+
+        if(header.next.next != null) header.next.next.prev = header;
+
+        header.next = header.next.next;
+        size--;
+
+        return elem;
+    }
+
+    public T front() throws QueueEmptyException{
+        if(size == 0) throw new QueueEmptyException("Queue is empty");
+
+        return header.next.element;
+    }
+
+    public int size(){
+        return size;
+    }
+
+    public boolean isEmpty(){
+        return size == 0;
+    }
+
+    public void clear(){
+        header.next = trailer;
+        trailer.prev = header;
+        size = 0;
+    }
 
     private class ListNode {
         private T element;
